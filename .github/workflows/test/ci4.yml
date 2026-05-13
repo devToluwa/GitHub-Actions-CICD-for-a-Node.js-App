@@ -1,0 +1,33 @@
+name: python app
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+  
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v4
+
+      - name: setup python
+        uses: actions/python@v4
+        with:
+          "python 3.11"
+      
+      - name: install dependacies
+        run: pip install -r requirements.txt
+      
+      - name: test
+        run: pytest
+
+      - name: login to dockerhub
+        uses: actions/docker-login@
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: build
+        run: docker run -p app
